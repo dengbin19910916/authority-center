@@ -1,0 +1,1 @@
+INSERT INTO users (username, password, enabled) VALUES ('user', '$2a$10$/YckwCeDk89no/pE7JzICOICEqWZ8uarS33usW/HM7hDrAka.ou1a', TRUE );
