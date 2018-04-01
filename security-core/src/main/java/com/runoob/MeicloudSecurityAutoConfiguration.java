@@ -7,12 +7,10 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configurers.GlobalAuthenticationConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 /**
  * @author DENGBIN
@@ -51,22 +49,22 @@ public class MeicloudSecurityAutoConfiguration extends WebSecurityConfigurerAdap
     }
     // @formatter:on
 
-    // @formatter:off
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth
-            .inMemoryAuthentication()
-                .withUser("user").password("$2a$10$/YckwCeDk89no/pE7JzICOICEqWZ8uarS33usW/HM7hDrAka.ou1a").roles("USER")
-                .and()
-                .withUser("ADMIN").password("$2a$10$/YckwCeDk89no/pE7JzICOICEqWZ8uarS33usW/HM7hDrAka.ou1a").roles("ADMIN")
-                .and()
-            .passwordEncoder(new BCryptPasswordEncoder(10));
+//    // @formatter:off
+//    @Override
+//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 //        auth
-//            .jdbcAuthentication()
-//            .dataSource(dataSource)
-//                .usersByUsernameQuery("select username, password, true from users where username = ?")
-//                .authoritiesByUsernameQuery("select username, 'ROLE_USER' from users where username = ?")
+//            .inMemoryAuthentication()
+//                .withUser("user").password("$2a$10$/YckwCeDk89no/pE7JzICOICEqWZ8uarS33usW/HM7hDrAka.ou1a").roles("USER")
+//                .and()
+//                .withUser("ADMIN").password("$2a$10$/YckwCeDk89no/pE7JzICOICEqWZ8uarS33usW/HM7hDrAka.ou1a").roles("ADMIN")
+//                .and()
 //            .passwordEncoder(new BCryptPasswordEncoder(10));
-    }
-    // @formatter:on
+////        auth
+////            .jdbcAuthentication()
+////            .dataSource(dataSource)
+////                .usersByUsernameQuery("select username, password, true from users where username = ?")
+////                .authoritiesByUsernameQuery("select username, 'ROLE_USER' from users where username = ?")
+////            .passwordEncoder(new BCryptPasswordEncoder(10));
+//    }
+//    // @formatter:on
 }
