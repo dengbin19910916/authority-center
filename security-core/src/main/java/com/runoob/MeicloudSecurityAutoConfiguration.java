@@ -2,10 +2,13 @@ package com.runoob;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configurers.GlobalAuthenticationConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -17,6 +20,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
  */
 @Slf4j
 @Configuration
+@ConditionalOnClass({AuthenticationManager.class, GlobalAuthenticationConfigurerAdapter.class})
 @EnableWebSecurity
 @EnableConfigurationProperties(MeicloudSecurityProperties.class)
 public class MeicloudSecurityAutoConfiguration extends WebSecurityConfigurerAdapter {
@@ -31,14 +35,17 @@ public class MeicloudSecurityAutoConfiguration extends WebSecurityConfigurerAdap
     // @formatter:off
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        final String loginPage = properties.getBrowser().getLoginPage();
+        final String loginProcessingUrl = properties.getBrowser().getLoginProcessingUrl();
+
         http
             .authorizeRequests()
-                .antMatchers(HttpMethod.GET, properties.getBrowser().getLoginPage()).permitAll()
+                .antMatchers(HttpMethod.GET, loginPage).permitAll()
                 .anyRequest().authenticated()
                 .and()
             .formLogin()
-                .loginPage(properties.getBrowser().getLoginPage())
-                .loginProcessingUrl("/login")
+                .loginPage(loginPage)
+                .loginProcessingUrl(loginProcessingUrl)
                 .and()
             .httpBasic();
     }

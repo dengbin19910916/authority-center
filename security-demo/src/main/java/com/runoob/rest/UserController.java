@@ -28,32 +28,6 @@ public class UserController {
         this.userRepository = userRepository;
     }
 
-    @PostMapping
-    public User create(@RequestBody @Valid User user, BindingResult errors) {
-        if (errors.hasErrors()) {
-            errors.getAllErrors().forEach(error -> System.out.println(error.getDefaultMessage()));
-        }
-
-        System.out.println(user.getId());
-        System.out.println(user.getUsername());
-        System.out.println(user.getPassword());
-        System.out.println(user.getBirthday());
-
-        user.setId(1L);
-        return user;
-    }
-
-    @PutMapping("/{id:\\d+}")
-    public User update(@PathVariable Long id, @RequestBody @Valid User user, BindingResult errors) {
-        if (errors.hasErrors()) {
-            errors.getAllErrors().forEach(error -> System.out.println(error.getDefaultMessage()));
-        }
-
-        System.out.println(userRepository.findOne(id));
-
-        return user;
-    }
-
     @JsonView(User.UserSimpleView.class)
     @GetMapping
     public Collection<User> query(UserQueryCondition condition, @PageableDefault(page = 2, size = 17, sort = "username,asc") Pageable pageable) {
@@ -70,6 +44,40 @@ public class UserController {
     @GetMapping("/{id:\\d+}")
     public User getInfo(@PathVariable Long id) {
         return userRepository.findOne(id).orElse(null);
+    }
+
+    @PostMapping
+    public User create(@RequestBody @Valid User user, BindingResult errors) {
+        if (errors.hasErrors()) {
+            errors.getAllErrors().forEach(error -> System.out.println(error.getDefaultMessage()));
+        }
+
+        System.out.println(user.getId());
+        System.out.println(user.getUsername());
+        System.out.println(user.getPassword());
+        System.out.println(user.getBirthday());
+
+        Long userId = userRepository.insert(user);
+        user.setId(userId);
+
+        return user;
+    }
+
+    @DeleteMapping("/{id:\\d+}")
+    public void delete(@PathVariable Long id) {
+        userRepository.delete(id);
+    }
+
+    @PutMapping("/{id:\\d+}")
+    public User update(@PathVariable Long id, @RequestBody @Valid User user, BindingResult errors) {
+        if (errors.hasErrors()) {
+            errors.getAllErrors().forEach(error -> System.out.println(error.getDefaultMessage()));
+        }
+
+        user.setId(id);
+        userRepository.update(user);
+
+        return user;
     }
 
     @Data

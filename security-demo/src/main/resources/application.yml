@@ -16,4 +16,7 @@ server:
   port: 80
 liquibase:
   enabled: false
-  password:
+meicloud:
+  security:
+    browser:
+      login-page: /login

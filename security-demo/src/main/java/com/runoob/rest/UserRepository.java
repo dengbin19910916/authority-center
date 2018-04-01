@@ -4,10 +4,12 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.Collection;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.IntStream;
 
 /**
  * @author DENGBIN
@@ -16,7 +18,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @Repository
 public class UserRepository {
 
-    private Collection<User> users = new CopyOnWriteArrayList<User>() {{
+    private List<User> users = new CopyOnWriteArrayList<User>() {{
         add(new User(1L, "db", "123456", getDate(1991, 11, 23)));
         add(new User(2L, "dq", "123456", getDate(1992, 6, 10)));
         add(new User(3L, "xff", "123456", getDate(193, 3, 29)));
@@ -28,7 +30,7 @@ public class UserRepository {
         return Date.from(localDate.atStartOfDay(zoneId).toInstant());
     }
 
-    public Collection<User> findAll() {
+    public List<User> findAll() {
         return users;
     }
 
@@ -36,8 +38,30 @@ public class UserRepository {
         return users.stream().filter(user -> user.getId().equals(id)).findFirst();
     }
 
+    public Long insert(User user) {
+        if (!users.isEmpty()) {
+            Long maxId = users.stream().max(Comparator.comparing(User::getId)).get().getId() + 1;
+            user.setId(maxId);
+            users.add(user);
+            return maxId;
+        } else {
+            users.add(user);
+            return (long) users.size();
+        }
+    }
+
     public void update(User user) {
-        users.removeIf(u -> u.getId().equals(user.getId()));
-        users.add(user);
+        IntStream.range(0, users.size()).filter(i -> users.get(i).getId().equals(user.getId())).forEachOrdered(i -> {
+            users.remove(i);
+            users.add(i, user);
+        });
+    }
+
+    public void delete(Long id) {
+        users.iterator().forEachRemaining(user -> {
+            if (user.getId().equals(id)) {
+                users.remove(user);
+            }
+        });
     }
 }

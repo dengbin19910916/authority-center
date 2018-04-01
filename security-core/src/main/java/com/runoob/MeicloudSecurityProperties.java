@@ -11,7 +11,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "meicloud.security")
 public class MeicloudSecurityProperties {
 
-    private Browser browser;
+    private Browser browser = new Browser();
 
     @Data
     @ConfigurationProperties(prefix = "meicloud.security.browser")
